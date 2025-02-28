@@ -1,0 +1,46 @@
+{
+  "name": "@repo/shared-stuff",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./forms/*": "./src/forms/*.tsx",
+    "./types/*": "./src/types/*.ts",
+    "./hooks/*": "./src/hooks/*.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "generate:component": "turbo gen react-component"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/roboto": "^5.0.8",
+    "@mui/icons-material": "^5.15.2",
+    "@mui/material": "^5.14.11",
+    "@tanstack/react-query": "^4.35.7",
+    "@types/lodash": "^4.14.200",
+    "dayjs": "^1.11.10",
+    "firebase": "^10.4.0",
+    "firebase-admin": "^11.11.0",
+    "isbot": "^3.6.8",
+    "lodash": "^4.17.21",
+    "nanoid": "^5.0.2",
+    "next": "13.4.7",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-youtube": "^10.1.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@turbo/gen": "^1.10.12",
+    "@types/eslint": "^8.44.7",
+    "@types/node": "^20.5.2",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.53.0",
+    "react": "^18.2.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.2"
+  }
+}
