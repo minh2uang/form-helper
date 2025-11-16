@@ -2,6 +2,7 @@
   "name": "@repo/shared-stuff",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "exports": {
     "./forms/*": "./src/forms/*.tsx",
     "./types/*": "./src/types/*.ts",
