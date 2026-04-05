@@ -1,20 +1,23 @@
-import { TextField } from '@mui/material'
+import { TextField, TextFieldProps } from '@mui/material'
 import FieldWrapper, { TcFieldWrapper } from './TcFieldWrapper'
 import TcFieldProps from './TcFieldProps'
 
-export interface TcTextFieldProps extends TcFieldWrapper<TcFieldProps<string>> {
-  type?: string
-  rows?: number
-}
+export type TcTextFieldProps = TcFieldProps<string> &
+  Omit<TextFieldProps, 'onChange' | 'error'> & {
+    type?: string
+    rows?: number
+    info?: string
+    // children?: JSX.Element
+  }
 
-const TcTextField = ({
+const TcTextField: React.FC<TcTextFieldProps> = ({
   onChange,
   error,
   isDirty,
   value,
   info,
   ...props
-}: TcTextFieldProps) => {
+}) => {
   return (
     <FieldWrapper isDirty={isDirty} error={error} info={info}>
       <TextField

@@ -5,5 +5,4 @@ export default interface TcFieldProps<Value, Required extends boolean = false> {
   placeholder?: string
   error?: string
   isDirty?: boolean
-  children?: JSX.Element
 }
