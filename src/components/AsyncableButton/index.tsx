@@ -12,6 +12,7 @@ const AsyncableButton: React.FC<AsyncableButtonProps> = ({
   const overRiddenOnClick = async () => {
     setIsLoading(true)
     try {
+      await new Promise((resolve) => setTimeout(resolve, 200))
       const clickResult = onClick()
       clickResult instanceof Promise && (await clickResult)
     } catch (error) {
