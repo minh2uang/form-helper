@@ -16,6 +16,7 @@ const AsyncableButton: React.FC<AsyncableButtonProps> = ({
       const clickResult = onClick()
       clickResult instanceof Promise && (await clickResult)
     } catch (error) {
+      console.log(error)
     } finally {
       setIsLoading(false)
     }

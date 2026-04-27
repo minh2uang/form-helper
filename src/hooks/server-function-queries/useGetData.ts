@@ -1,4 +1,5 @@
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 
 // abstract away error handling
 // skip retrieving "user" everywhere
@@ -8,7 +9,7 @@ const useGetData = <DataType>(
   fallbackValue?: DataType
 ) => {
   const { data, refetch, status } = useSuspenseQuery({
-    queryKey: [fn.name],
+    queryKey: [fn.toString()],
     queryFn: async (): Promise<DataType> => {
       try {
         return await fn()
