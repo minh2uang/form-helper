@@ -6,7 +6,10 @@ import {
   OptionalUnlessRequiredId,
   WithId,
   WithoutId,
-  Document
+  Document,
+  InsertOneOptions,
+  BulkWriteOptions,
+  UpdateOptions
 } from 'mongodb'
 import zod from 'zod'
 import z from 'zod'
@@ -42,25 +45,32 @@ export const createModel = <Schema extends zod.ZodObject>(
       }
       return item
     },
-    findMany: async (query: Filter<ItemType>): Promise<WithId<ItemType>[]> => {
-      return (await collection.find(query).toArray()).filter(
+    findMany: async (
+      query: Filter<ItemType>,
+      options?: FindOptions
+    ): Promise<WithId<ItemType>[]> => {
+      return (await collection.find(query, options).toArray()).filter(
         (i) => !i.isDeleted
       )
     },
     createOne: async (
-      newItem: WithoutId<Omit<ItemType, '_createdAt' | 'isDeleted'>>
+      newItem: WithoutId<Omit<ItemType, '_createdAt' | 'isDeleted'>>,
+      options?: InsertOneOptions
     ) => {
       const parsedItem = (await schema.parseAsync(
         newItem
       )) as OptionalUnlessRequiredId<ItemType>
-      const { insertedId } = await collection.insertOne(parsedItem)
+      const { insertedId } = await collection.insertOne(parsedItem, options)
       const insertedItem = await collection.findOne({ _id: insertedId as any })
       if (!insertedItem) {
         throw 'Should not be null here'
       }
       return insertedItem
     },
-    createMany: async (newItems: OptionalId<ItemType>[]) => {
+    createMany: async (
+      newItems: OptionalId<ItemType>[],
+      options?: BulkWriteOptions
+    ) => {
       const parsedItems = await Promise.all(
         newItems.map(async (item) => {
           return (await schema.parseAsync(
@@ -68,13 +78,17 @@ export const createModel = <Schema extends zod.ZodObject>(
           )) as OptionalUnlessRequiredId<ItemType>
         })
       )
-      await collection.insertMany(parsedItems)
+      await collection.insertMany(parsedItems, options)
     },
-    updateOne: async (filter: Filter<ItemType>, newItem: Partial<ItemType>) => {
+    updateOne: async (
+      filter: Filter<ItemType>,
+      newItem: Partial<ItemType>,
+      options?: UpdateOptions
+    ) => {
       const parsedItem = (await schema
         .partial()
         .parseAsync(newItem)) as Partial<ItemType>
-      await collection.updateOne(filter, { $set: parsedItem })
+      await collection.updateOne(filter, { $set: parsedItem }, options)
     },
     deleteOne: async (query: Filter<ItemType>) => {
       return await collection.updateOne(query, {

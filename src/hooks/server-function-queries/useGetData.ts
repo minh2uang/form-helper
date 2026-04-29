@@ -1,18 +1,20 @@
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
-// abstract away error handling
-// skip retrieving "user" everywhere
-
-const useGetData = <DataType>(
-  fn: () => Promise<DataType>,
+const useGetData = <DataType, ParamsType>({
+  fn,
+  fallbackValue,
+  params
+}: {
+  fn: (params: ParamsType) => Promise<DataType>
   fallbackValue?: DataType
-) => {
+  params: ParamsType
+}) => {
   const { data, refetch, status } = useSuspenseQuery({
-    queryKey: [fn.toString()],
+    queryKey: [fn.name, params],
     queryFn: async (): Promise<DataType> => {
       try {
-        return await fn()
+        const result: DataType = await fn(params)
+        return result
       } catch (err) {
         if (!!fallbackValue) {
           return fallbackValue as DataType
