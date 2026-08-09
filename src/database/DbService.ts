@@ -30,14 +30,13 @@ export const createModel = <Schema extends zod.ZodObject>(
   }
 
   const collection = db.collection<ItemType>(collectionName as string)
-
   return {
     findOne: async (
       query: Filter<ItemType>,
       options?: FindOptions
     ): Promise<WithId<ItemType> | null> => {
       const item: WithId<ItemType> | null = await collection.findOne(
-        { ...query, isDeleted: false },
+        { ...query, isDeleted: { $ne: true } },
         options
       )
       if (!item) {
@@ -49,9 +48,9 @@ export const createModel = <Schema extends zod.ZodObject>(
       query: Filter<ItemType>,
       options?: FindOptions
     ): Promise<WithId<ItemType>[]> => {
-      return (await collection.find(query, options).toArray()).filter(
-        (i) => !i.isDeleted
-      )
+      return await collection
+        .find({ ...query, isDeleted: { $ne: true } }, options)
+        .toArray()
     },
     createOne: async (
       newItem: WithoutId<Omit<ItemType, '_createdAt' | 'isDeleted'>>,
@@ -102,6 +101,7 @@ export const createModel = <Schema extends zod.ZodObject>(
     },
     aggregate: <TResult extends Document = ItemType>(pipeline: Document[]) =>
       collection.aggregate<TResult>(pipeline),
-    name: collection.collectionName
+    name: collection.collectionName,
+    collection
   }
 }

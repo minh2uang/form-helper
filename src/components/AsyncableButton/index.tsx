@@ -2,18 +2,17 @@ import { Button, ButtonProps } from '@mui/material'
 import { useState } from 'react'
 
 interface AsyncableButtonProps extends ButtonProps {
-  onClick: () => Promise<void> | void
+  onClick: (event: React.MouseEvent<HTMLElement>) => Promise<void> | void
 }
 const AsyncableButton: React.FC<AsyncableButtonProps> = ({
   onClick,
   ...props
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const overRiddenOnClick = async () => {
+  const overRiddenOnClick = async (event: React.MouseEvent<HTMLElement>) => {
     setIsLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 200))
-      const clickResult = onClick()
+      const clickResult = onClick(event)
       clickResult instanceof Promise && (await clickResult)
     } catch (error) {
       console.log(error)
